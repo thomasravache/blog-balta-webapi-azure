@@ -7,39 +7,42 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Blog.Migrations
 {
     [DbContext(typeof(BlogDataContext))]
-    [Migration("20230225011218_RemoveGitHubColumn")]
-    partial class RemoveGitHubColumn
+    [Migration("20230815033957_v1")]
+    partial class v1
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Blog.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("NVARCHAR(80)")
+                        .HasColumnType("NVARCHAR")
                         .HasColumnName("Name");
 
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("VARCHAR(80)")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("Slug");
 
                     b.HasKey("Id");
@@ -47,17 +50,16 @@ namespace Blog.Migrations
                     b.HasIndex(new[] { "Slug" }, "IX_Category_Slug")
                         .IsUnique();
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("Blog.Models.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
@@ -100,15 +102,16 @@ namespace Blog.Migrations
                     b.HasIndex(new[] { "Slug" }, "IX_Post_Slug")
                         .IsUnique();
 
-                    b.ToTable("Post");
+                    b.ToTable("Post", (string)null);
                 });
 
             modelBuilder.Entity("Blog.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -127,8 +130,9 @@ namespace Blog.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -147,10 +151,9 @@ namespace Blog.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
@@ -158,7 +161,7 @@ namespace Blog.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(160)
-                        .HasColumnType("VARCHAR(160)")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("Email");
 
                     b.Property<string>("Image")
@@ -167,19 +170,19 @@ namespace Blog.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("NVARCHAR(80)")
+                        .HasColumnType("NVARCHAR")
                         .HasColumnName("Name");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("VARCHAR(255)")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("PasswordHash");
 
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("VARCHAR(80)")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("Slug");
 
                     b.HasKey("Id");
@@ -187,7 +190,7 @@ namespace Blog.Migrations
                     b.HasIndex(new[] { "Slug" }, "IX_User_Slug")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("PostTag", b =>
@@ -225,16 +228,16 @@ namespace Blog.Migrations
                     b.HasOne("Blog.Models.User", "Author")
                         .WithMany("Posts")
                         .HasForeignKey("AuthorId")
-                        .HasConstraintName("FK_Post_Author")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Post_Author");
 
                     b.HasOne("Blog.Models.Category", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Post_Category")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Post_Category");
 
                     b.Navigation("Author");
 
@@ -246,16 +249,16 @@ namespace Blog.Migrations
                     b.HasOne("Blog.Models.Tag", null)
                         .WithMany()
                         .HasForeignKey("PostId")
-                        .HasConstraintName("FK_PostTag_PostId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_PostTag_PostId");
 
                     b.HasOne("Blog.Models.Post", null)
                         .WithMany()
                         .HasForeignKey("TagId")
-                        .HasConstraintName("FK_PostTag_TagId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_PostTag_TagId");
                 });
 
             modelBuilder.Entity("UserRole", b =>
@@ -263,16 +266,16 @@ namespace Blog.Migrations
                     b.HasOne("Blog.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("FK_UserRole_RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_UserRole_RoleId");
 
                     b.HasOne("Blog.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK_UserRole_UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_UserRole_UserId");
                 });
 
             modelBuilder.Entity("Blog.Models.Category", b =>

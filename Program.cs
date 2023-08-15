@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Blog;
 using Blog.Data;
+using Blog.Extensions;
 using Blog.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -13,14 +14,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigureAuthentication(builder);
 ConfigureMvc(builder);
-ConfigureServices(builder);
+// ConfigureServices(builder);
+builder.LoadConfiguration();
+builder.ConfigureServices();
 
 builder.Services.AddEndpointsApiExplorer(); // Adiciona o Swagger
 builder.Services.AddSwaggerGen(); // Gera o HTML do Swagger
 
 var app = builder.Build();
 
-LoadConfiguration(app);
+// LoadConfiguration(app);
 
 // HTTPS -> conexão estará encriptada -> necessita de um certificado digital
 /*
